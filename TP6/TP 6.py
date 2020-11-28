@@ -16,6 +16,8 @@ from mpl_toolkits.mplot3d import Axes3D
 """
 PARTIE 1
 """
+print("Partie 1")
+
 f = lambda x : np.exp(x)
 u_exact = lambda x : np.exp(x)
 
@@ -51,11 +53,17 @@ def graph(N):
     
     plt.plot(x,U, label = "Cholesky")
     plt.plot(x,U_exact, label = "Exacte")
+    plt.title("Solution de Cholesky et la solution exacte")
+    plt.xlabel('x')
+    plt.ylabel('u')
     plt.legend()
     plt.show()
     
     err = [U[i] - U_exact[i] for i in range(0,N)]
     plt.plot(x,err, label = 'Erreur')
+    plt.title("Erreur entre la solution de Cholesky et la solution exacte")
+    plt.xlabel('x')
+    plt.ylabel('Erreur')
     plt.legend()
     plt.show()
     
@@ -80,6 +88,9 @@ def comparaison():
     plt.plot(x[2],U[2], label = "N = 15")
     plt.plot(x[3],U[3], label = "N = 20")
     plt.plot(x[3],U_exact, label = "Exacte", color = 'r')
+    plt.title("Comparaison entre la solution de Cholesky et la solution exacte avec différentes tailles de N")
+    plt.xlabel('x')
+    plt.ylabel('u')
     plt.legend()
     plt.show()
     
@@ -89,9 +100,14 @@ def comparaison():
     plt.plot(x[1],err[1], label = 'N = 10')
     plt.plot(x[2],err[2], label = 'N = 15')
     plt.plot(x[3],err[3], label = 'N = 20')
+    plt.title("Comparaison des erreurs en fonction des différentes tailles de N")
+    plt.xlabel('x')
+    plt.ylabel('Erreur')
     plt.legend()
     plt.show()
     return 0
+
+"La solution approchée  et la solution exacte se superposent parfaitement quand N augmente"
 
 
 comparaison()
@@ -100,6 +116,7 @@ comparaison()
 """
 PARTIE 2
 """
+print("Partie 2")
 
 def matrice_Poisson(n,h):
     # Création des matrices A
@@ -152,7 +169,7 @@ def graphPoisson(N,cte):
     
     for l in range(0,100):
         for m in range(0,100):
-            Ulm = 16/(((2*l-1)**2 + (2*m-1)**2)* (np.pi**4) * (2*l-1)*(2*m-1))
+            Ulm = -16/(((2*l-1)**2 + (2*m-1)**2)* (np.pi**4) * (2*l-1)*(2*m-1))
             U_exact_P = Ulm * np.sin((2*l-1)*np.pi*X) * np.sin((2*m-1)*np.pi*Y)
     
     ax1 = plt.gca(projection='3d')
@@ -164,4 +181,5 @@ def graphPoisson(N,cte):
     plt.show()
     return 0
 
-graphPoisson(15, 1)
+#graphPoisson(15, 1)# Question 1
+graphPoisson(15, -1)# Question 2

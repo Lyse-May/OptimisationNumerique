@@ -167,13 +167,19 @@ def graphPoisson(N,cte):
     ax.set_zlabel('Z')
     plt.show()
     
+    U_exact_P = 0
+    p = 0
+    
     for l in range(0,100):
         for m in range(0,100):
             Ulm = -16/(((2*l-1)**2 + (2*m-1)**2)* (np.pi**4) * (2*l-1)*(2*m-1))
-            U_exact_P = Ulm * np.sin((2*l-1)*np.pi*X) * np.sin((2*m-1)*np.pi*Y)
-    
+            U_exact_P += Ulm * np.sin((2*l-1)*np.pi*X) * np.sin((2*m-1)*np.pi*Y)
+        
+        p = p + U_exact_P # il manquait la double sommme avant dans le code donc je l'ai rajouté
+        
+        
     ax1 = plt.gca(projection='3d')
-    ax1.plot_surface(X,Y,U_exact_P,cmap=cm.viridis)
+    ax1.plot_surface(X,Y,p,cmap=cm.viridis)
     plt.title('Exact')
     ax1.set_xlabel('X')
     ax1.set_ylabel('Y')

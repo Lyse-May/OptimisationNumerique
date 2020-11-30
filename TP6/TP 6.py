@@ -26,20 +26,20 @@ u_1 = np.exp(1)
 
 def matrice(n,h):
     # Création des matrices A
-    A = np.zeros((n+1,n+1))
-    for i in range(0,n+1):
+    A = np.zeros((n,n))
+    for i in range(0,n):
         A[i,i] = 2*(1+h**2)
         
-    for i in range(1,n+1):
+    for i in range(1,n):
         A[i,i-1] = -1.
         A[i-1,i] = -1.
         
     return (1/h**2)*A
 
 def resolution(N,u_0,u_1,f):
-    h = 1/(N+1)
+    h = 1/N
     A = matrice(N,h)
-    x = np.linspace(0,1,N+1)
+    x = np.linspace(0,1,N)
     b = f(x)
     b[0] += u_0/(h**2)
     b[-1] += u_1/(h**2)
@@ -59,7 +59,7 @@ def graph(N):
     plt.legend()
     plt.show()
     
-    err = [abs(U[i] - U_exact[i]) for i in range(0,N+1)]
+    err = [abs(U[i] - U_exact[i]) for i in range(0,N)]
     plt.plot(x,err, label = 'Erreur')
     plt.title("Erreur entre la solution de Cholesky et la solution exacte")
     plt.xlabel('x')

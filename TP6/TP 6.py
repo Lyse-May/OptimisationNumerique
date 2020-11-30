@@ -26,20 +26,20 @@ u_1 = np.exp(1)
 
 def matrice(n,h):
     # Création des matrices A
-    A = np.zeros((n,n))
-    for i in range(0,n):
+    A = np.zeros((n+1,n+1))
+    for i in range(0,n+1):
         A[i,i] = 2*(1+h**2)
         
-    for i in range(1,n):
+    for i in range(1,n+1):
         A[i,i-1] = -1.
         A[i-1,i] = -1.
         
     return (1/h**2)*A
 
 def resolution(N,u_0,u_1,f):
-    h = 1/N
+    h = 1/(N+1)
     A = matrice(N,h)
-    x = np.linspace(0,1,N)
+    x = np.linspace(0,1,N+1)
     b = f(x)
     b[0] += u_0/(h**2)
     b[-1] += u_1/(h**2)
@@ -59,7 +59,7 @@ def graph(N):
     plt.legend()
     plt.show()
     
-    err = [U[i] - U_exact[i] for i in range(0,N)]
+    err = [abs(U[i] - U_exact[i]) for i in range(0,N+1)]
     plt.plot(x,err, label = 'Erreur')
     plt.title("Erreur entre la solution de Cholesky et la solution exacte")
     plt.xlabel('x')
@@ -95,7 +95,7 @@ def comparaison():
     plt.show()
     
     for j in range(0,len(N)):
-        err.append([U[j][i] - U_exact[i] for i in range(0,len(U[j]))])
+        err.append([abs(U[j][i] - U_exact[i]) for i in range(0,len(U[j]))])
     plt.plot(x[0],err[0], label = 'N = 5')
     plt.plot(x[1],err[1], label = 'N = 10')
     plt.plot(x[2],err[2], label = 'N = 15')
@@ -139,8 +139,8 @@ def resolution_Poisson(N,cte):
     h = 1/N
     x = np.linspace(0,1,N)
     y = np.linspace(0,1,N)
-    #f = -np.ones(N**2)
     X,Y = np.meshgrid(x,y)
+    
     A = matrice_Poisson(N,h)
     b = cte * np.ones(N**2)
     V = resolchol(A,b)
@@ -153,39 +153,100 @@ def resolution_Poisson(N,cte):
     return U,X,Y,V
 
 def graphPoisson(N,cte):
-    
-    """
-    NE FONCTIONNE PAS
-    """
-    
+        
     U,X,Y,V = resolution_Poisson(N, cte)
     ax = plt.gca(projection='3d')
-    ax.plot_surface(X,Y,U,cmap=cm.viridis)
+    #ax.plot_surface(X,Y,U,cmap=cm.viridis)
+    ax.plot_surface(X,Y,U,cmap='jet')
     plt.title('Cholesky')
     ax.set_xlabel('X')
     ax.set_ylabel('Y')
     ax.set_zlabel('Z')
     plt.show()
     
+    return 0
+
+def graphPoissonExact(N):
+
     U_exact_P = 0
     p = 0
     
-    for l in range(0,100):
-        for m in range(0,100):
+    x = np.linspace(0,1,N)
+    y = np.linspace(0,1,N)
+    X,Y = np.meshgrid(x,y)
+    
+    for l in range(1,500):
+        for m in range(1,500):
             Ulm = -16/(((2*l-1)**2 + (2*m-1)**2)* (np.pi**4) * (2*l-1)*(2*m-1))
             U_exact_P += Ulm * np.sin((2*l-1)*np.pi*X) * np.sin((2*m-1)*np.pi*Y)
-        
-        p = p + U_exact_P # il manquait la double sommme avant dans le code donc je l'ai rajouté
-        
-        
-    ax1 = plt.gca(projection='3d')
-    ax1.plot_surface(X,Y,p,cmap=cm.viridis)
+            
+        p += U_exact_P
+         
+    ax = plt.gca(projection='3d')
+    #ax.plot_surface(X,Y,U_exact_P,cmap=cm.viridis)
+    ax.plot_surface(X,Y,U_exact_P,cmap='jet')
     plt.title('Exact')
-    ax1.set_xlabel('X')
-    ax1.set_ylabel('Y')
-    ax1.set_zlabel('Z')
+    ax.set_xlabel('X')
+    ax.set_ylabel('Y')
+    ax.set_zlabel('Z')
     plt.show()
+    
     return 0
+    
 
-#graphPoisson(15, 1)# Question 1
-graphPoisson(15, -1)# Question 2
+#graphPoisson(15, 1) #Question 1
+#graphPoisson(15, -1) #Question 2
+#graphPoissonExact(15)
+
+"""
+PARTIE 3
+"""
+print("Partie 3")
+"""
+L = 1.0
+tfin = 0.2
+
+dx = 1.0e-2
+dt = 1.0e-4
+
+Nx = int(L/dx)
+Nt = int(tfin/dt)
+
+eta = dt / ((dx)**2)
+
+X = np.linspace(0,1,Nx)
+T = np.linspace(0,tfin,Nt)
+SX,ST = np.meshgrid(X,T)
+
+def matrice_chaleur1D(n,h):
+    # Création des matrices A
+    A = np.zeros((n,n),float)
+    A[0,0] = A[n-1,n-1] = 1
+    for i in range(0,n): # ou for i in range(1,n-1)
+        A[i,i] = (1+2*h)
+        
+    for i in range(1,n):
+        A[i,i-1] = h
+        A[i-1,i] = h
+        
+    return A
+
+A = matrice_chaleur1D(Nx,eta)
+V = np.zeros((Nt,Nx),float)
+
+V[0,:] = np.exp(X)
+#V[0,int(Nx/2)] = 1/2
+
+
+for t in range(0,Nt-1):
+    V[t+1,:] = A.dot(V[t,:].T)
+    #V[t+1,:] = np.linalg.solve(A,V[t,:]).T
+    
+fig = plt.figure(figsize=(14,8))
+ax = plt.gca(projection='3d')
+ax.set_xlabel('X')
+ax.set_ylabel('temps')
+ax.set_zlabel('temperature')
+ax.view_init(elev=15, azim = 120)
+ax.plot_surface(SX,ST,V,cstride=1,linewidth=0,cmap='jet')
+"""

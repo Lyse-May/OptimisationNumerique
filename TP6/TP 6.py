@@ -193,10 +193,12 @@ def graphPoissonExact(N):
     
     return 0
     
-
-#graphPoisson(15, 1) #Question 1
-#graphPoisson(15, -1) #Question 2
-#graphPoissonExact(15)
+print("Question 1 avec f = 1")
+graphPoisson(15, 1) #Question 1
+print("Question 2 avec f = -1")
+graphPoisson(15, -1) #Question 2
+print("Solution exacte")
+graphPoissonExact(15)
 
 """
 PARTIE 3

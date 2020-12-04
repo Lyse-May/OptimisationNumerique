@@ -204,7 +204,7 @@ graphPoissonExact(15)
 PARTIE 3
 """
 print("Partie 3")
-"""
+
 L = 1.0
 tfin = 0.2
 
@@ -251,4 +251,4 @@ ax.set_ylabel('temps')
 ax.set_zlabel('temperature')
 ax.view_init(elev=15, azim = 120)
 ax.plot_surface(SX,ST,V,cstride=1,linewidth=0,cmap='jet')
-"""
+

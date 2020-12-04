@@ -69,7 +69,7 @@ def graph(N):
     
     return 0
 
-#graph(N = 20)
+graph(N = 20)
 
 def comparaison():
      
@@ -110,7 +110,7 @@ def comparaison():
 "La solution approchée  et la solution exacte se superposent parfaitement quand N augmente"
 
 
-#comparaison()
+comparaison()
 
 
 """
@@ -157,7 +157,6 @@ def graphPoisson(N,cte):
     U,X,Y,V = resolution_Poisson(N, cte)
     ax = plt.gca(projection='3d')
     ax.plot_surface(X,Y,U,cmap=cm.viridis)
-    #ax.plot_surface(X,Y,U,cmap='jet')
     plt.title('Cholesky')
     ax.set_xlabel('X')
     ax.set_ylabel('Y')
@@ -184,7 +183,6 @@ def graphPoissonExact(N):
          
     ax = plt.gca(projection='3d')
     ax.plot_surface(X,Y,U_exact_P,cmap=cm.viridis)
-    #ax.plot_surface(X,Y,U_exact_P,cmap='jet')
     plt.title('Exact')
     ax.set_xlabel('X')
     ax.set_ylabel('Y')
@@ -194,9 +192,10 @@ def graphPoissonExact(N):
     return 0
     
 
-#graphPoisson(15, 1) #Question 1
-#graphPoisson(15, -1) #Question 2
-#graphPoissonExact(15)
+graphPoisson(15, 1) #Question 1
+
+graphPoisson(15, -1) #Question 2
+graphPoissonExact(15)
 
 """
 PARTIE 3

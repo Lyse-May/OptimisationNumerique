@@ -203,21 +203,6 @@ PARTIE 3
 """
 print("Partie 3")
 
-L = 1.0
-tfin = 0.2
-
-dx = 1.0e-1
-dt = 2.0e-5
-
-Nx = int(L/dx)
-Nt = int(tfin/dt)
-
-eta = dt / (dx**2)
-print(eta)
-
-X = np.linspace(0,1,Nx)
-T = np.linspace(0,tfin,Nt)
-SX,ST = np.meshgrid(X,T)
 
 def matrice_chaleur1D(n,h):
     # Création des matrices A
@@ -232,23 +217,43 @@ def matrice_chaleur1D(n,h):
         
     return A
 
-A = matrice_chaleur1D(Nx-2,eta)
-V = np.zeros((Nt,Nx),float)
-
-#Condition initiales
-V[0,:] = np.exp(X)
-
-#Condition aux limites
-V[:,0] = 0   
-V[:,Nx-1] = 0 
-
-for t in range(0,Nt-1):
-    V[t+1,1:-1] = A.dot(V[t,1:-1])
+def Chaleur_1D(L,tfin,dx,dt):
     
-fig = plt.figure(figsize=(12,8))
-ax = plt.gca(projection='3d')
-ax.set_xlabel('X')
-ax.set_ylabel('temps')
-ax.set_zlabel('temperature')
-#ax.view_init(elev=15, azim = 120)
-ax.plot_surface(SX,ST,V,cstride = 1, linewidth = 0,cmap='jet')
+    Nx = int(L/dx)
+    Nt = int(tfin/dt)
+    
+    eta = dt / (dx**2)
+    
+    X = np.linspace(0,1,Nx)
+    T = np.linspace(0,tfin,Nt)
+    SX,ST = np.meshgrid(X,T)
+       
+    A = matrice_chaleur1D(Nx-2,eta)
+    V = np.zeros((Nt,Nx),float)
+    
+    #Condition initiales
+    V[0,:] = np.exp(X)
+        
+    #Condition aux limites
+    V[:,0] = 0   
+    V[:,Nx-1] = 0 
+        
+    for t in range(0,Nt-1):
+        V[t+1,1:-1] = A.dot(V[t,1:-1])
+        
+    fig = plt.figure(figsize=(12,8))
+    ax = plt.gca(projection='3d')
+    ax.set_xlabel('X')
+    ax.set_ylabel('temps')
+    ax.set_zlabel('temperature')
+    ax.plot_surface(SX,ST,V,cstride = 1, linewidth = 0,cmap='jet')
+    
+    return 0
+
+L = 1.0
+tfin = 0.2
+
+dx = 1.0e-1
+dt = 1.0e-3
+
+Chaleur_1D(L,tfin,dx,dt)

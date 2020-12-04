@@ -69,7 +69,7 @@ def graph(N):
     
     return 0
 
-graph(N = 20)
+#graph(N = 20)
 
 def comparaison():
      
@@ -110,7 +110,7 @@ def comparaison():
 "La solution approchée  et la solution exacte se superposent parfaitement quand N augmente"
 
 
-comparaison()
+#comparaison()
 
 
 """
@@ -156,8 +156,8 @@ def graphPoisson(N,cte):
         
     U,X,Y,V = resolution_Poisson(N, cte)
     ax = plt.gca(projection='3d')
-    #ax.plot_surface(X,Y,U,cmap=cm.viridis)
-    ax.plot_surface(X,Y,U,cmap='jet')
+    ax.plot_surface(X,Y,U,cmap=cm.viridis)
+    #ax.plot_surface(X,Y,U,cmap='jet')
     plt.title('Cholesky')
     ax.set_xlabel('X')
     ax.set_ylabel('Y')
@@ -183,8 +183,8 @@ def graphPoissonExact(N):
         p += U_exact_P
          
     ax = plt.gca(projection='3d')
-    #ax.plot_surface(X,Y,U_exact_P,cmap=cm.viridis)
-    ax.plot_surface(X,Y,U_exact_P,cmap='jet')
+    ax.plot_surface(X,Y,U_exact_P,cmap=cm.viridis)
+    #ax.plot_surface(X,Y,U_exact_P,cmap='jet')
     plt.title('Exact')
     ax.set_xlabel('X')
     ax.set_ylabel('Y')
@@ -193,12 +193,10 @@ def graphPoissonExact(N):
     
     return 0
     
-print("Question 1 avec f = 1")
-graphPoisson(15, 1) #Question 1
-print("Question 2 avec f = -1")
-graphPoisson(15, -1) #Question 2
-print("Solution exacte")
-graphPoissonExact(15)
+
+#graphPoisson(15, 1) #Question 1
+#graphPoisson(15, -1) #Question 2
+#graphPoissonExact(15)
 
 """
 PARTIE 3
@@ -208,13 +206,14 @@ print("Partie 3")
 L = 1.0
 tfin = 0.2
 
-dx = 1/20 #1.0e-2
-dt = 0.0020 #1.0e-4
+dx = 1.0e-1
+dt = 2.0e-5
 
 Nx = int(L/dx)
 Nt = int(tfin/dt)
 
-eta = dt / ((dx)**2)
+eta = dt / (dx**2)
+print(eta)
 
 X = np.linspace(0,1,Nx)
 T = np.linspace(0,tfin,Nt)
@@ -223,9 +222,9 @@ SX,ST = np.meshgrid(X,T)
 def matrice_chaleur1D(n,h):
     # Création des matrices A
     A = np.zeros((n,n),float)
-    A[0,0] = A[n-1,n-1] = 1
-    for i in range(0,n): # ou for i in range(1,n-1)
-        A[i,i] = (1+2*h)
+
+    for i in range(0,n): 
+        A[i,i] = (1-2*h)
         
     for i in range(1,n):
         A[i,i-1] = h
@@ -233,22 +232,23 @@ def matrice_chaleur1D(n,h):
         
     return A
 
-A = matrice_chaleur1D(Nx,eta)
+A = matrice_chaleur1D(Nx-2,eta)
 V = np.zeros((Nt,Nx),float)
 
+#Condition initiales
 V[0,:] = np.exp(X)
-#V[0,int(Nx/2)] = 1/2
 
+#Condition aux limites
+V[:,0] = 0   
+V[:,Nx-1] = 0 
 
 for t in range(0,Nt-1):
-    V[t+1,:] = A.dot(V[t,:].T)
-    #V[t+1,:] = np.linalg.solve(A,V[t,:]).T
+    V[t+1,1:-1] = A.dot(V[t,1:-1])
     
-fig = plt.figure(figsize=(14,8))
+fig = plt.figure(figsize=(12,8))
 ax = plt.gca(projection='3d')
 ax.set_xlabel('X')
 ax.set_ylabel('temps')
 ax.set_zlabel('temperature')
-ax.view_init(elev=15, azim = 120)
-ax.plot_surface(SX,ST,V,cstride=1,linewidth=0,cmap='jet')
-
+#ax.view_init(elev=15, azim = 120)
+ax.plot_surface(SX,ST,V,cstride = 1, linewidth = 0,cmap='jet')

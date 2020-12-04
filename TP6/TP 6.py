@@ -208,8 +208,8 @@ print("Partie 3")
 L = 1.0
 tfin = 0.2
 
-dx = 1.0e-2
-dt = 1.0e-4
+dx = 1/20 #1.0e-2
+dt = 0.0020 #1.0e-4
 
 Nx = int(L/dx)
 Nt = int(tfin/dt)
